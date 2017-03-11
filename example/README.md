@@ -14,7 +14,7 @@ In this example, we use dataextractors to pull pixel data ('chips') from AOIs in
     chips, labels = de.get_data('features.geojson', return_labels=True, num_chips=10)
     ```
 
-    <img src='images/chips.png' width=500>  
+    <img src='images/chips.png' width=700>  
     <sub>Chips extracted from above example'</sub>
 
 2. Note that the above command will return the entire bounding box, yielding various chip sizes. We can also create uniformly-sized chips (300px x 300 px) with black masks over the area not included in the geometry.:
@@ -26,7 +26,7 @@ In this example, we use dataextractors to pull pixel data ('chips') from AOIs in
                                          num_chips=10, max_side_dim=260)
     ```
 
-    <img src='images/uniform_chips.png', width=250>  
+    <img src='images/uniform_chips.png', width=500>  
     <sub>Uniform chips produced above. Notice the bounding boxes are returned, but any pixels outside of the geometry are blacked out.</sub>
 
 3. Finally, we can create a uniform chip generator as follows:
