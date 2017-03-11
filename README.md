@@ -1,6 +1,6 @@
 # dataextractors
 
-A collecton of functions to extract pixels and metadata using geojson and georeferenced imagery.
+A collection of functions to extract pixels and metadata using geojson and georeferenced imagery.
 
 ## Installation/Usage
 
