@@ -1,6 +1,6 @@
 # Extract geojson features from an image
 
-In this example, we use dataextractors to pull pixel data ('chips') from AOIs in the image 120030102013.tif. Each AOI is stored as a feature in [features.geojson](https://github.com/PlatformStories/dataextractors/blob/master/example/features.geojson), which includes the feature geometry, an image id reference, a feature id and a class name. 
+In this example, we use dataextractors to pull pixel data ('chips') from AOIs in the image 120030102013.tif. Each AOI is stored as a feature in [features.geojson](https://github.com/PlatformStories/dataextractors/blob/master/example/features.geojson), which includes the feature geometry, an image id reference, a feature id and a class name.
 
 <img src='images/img.png' width=500>   
 <sub>Sample image.</sub>
