@@ -15,15 +15,15 @@ In this example, we use dataextractors to pull pixel data ('chips') from AOIs in
     ```
 
     <img src='images/chips.png' width=700>  
-    <sub>Extracted chips.'</sub>
+    <sub>Extracted chips.</sub>
 
 2. Create uniformly-sized chips with black masks over the area not included in the geometry:
 
     ```python
     # Extract uniformly-sized chips
-    chips, labels = de.get_uniform_chips('features.geojson',
-                                         classes=['No Buildings', 'Buildings'],
-                                         num_chips=10, max_side_dim=260)
+    chips, one_hot_vecs = de.get_uniform_chips('features.geojson',
+                                               classes=['No Buildings', 'Buildings'],
+                                               num_chips=10, max_side_dim=260)
     ```
 
     <img src='images/uniform_chips.png', width=500>  
@@ -37,5 +37,5 @@ In this example, we use dataextractors to pull pixel data ('chips') from AOIs in
                                          classes=['No Buildings', 'Buildings'])
 
     # Generate a batch of 10 chips
-    chips, labels = chip_gen.next()
+    chips, one_hot_vecs = chip_gen.next()
     ```
