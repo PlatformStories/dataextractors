@@ -26,7 +26,7 @@ setup(name='dataextractors',
                         'geojson >= 1.3.2',
                         'geojsontools >= 0.0.2',
                         'numpy >= 1.12.0',
-                        'scikit-learn >= 0.17.1',
+                        'scipy',
                         'Pillow == 2.6.0',
                         'bumpversion'
                         ]
