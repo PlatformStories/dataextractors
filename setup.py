@@ -11,7 +11,7 @@ if sys.version_info > (3,):
 # long_description=readme,
 
 setup(name='dataextractors',
-      version='0.0.2',
+      version='0.0.3',
       description='Extract pixels and metadata using shapefiles and georeferenced imagery.',
       classifiers=[],
       keywords='',
