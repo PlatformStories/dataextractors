@@ -24,8 +24,10 @@ setup(name='dataextractors',
       zip_safe=False,
       install_requires=['geoio >= 1.1.1',
                         'geojson >= 1.3.2',
+                        'geojsontools >= 0.0.2',
                         'numpy >= 1.12.0',
                         'scikit-learn >= 0.17.1',
+                        'Pillow == 2.6.0',
                         'bumpversion'
                         ]
       )
