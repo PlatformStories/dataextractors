@@ -10,6 +10,12 @@ In a virtualenv or conda virtual environment:
 pip install dataextractors
 ```
 
+A conda environment is preferred because the installation of gdal is straightforward:
+
+```bash
+conda create -n myenv -c conda-forge gdal
+source activate myenv
+```
 
 ## Development
 
