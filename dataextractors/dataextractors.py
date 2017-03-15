@@ -7,6 +7,7 @@ import geojson
 import geojsontools as gt
 import numpy as np
 import sys
+import subprocess
 import warnings
 import osgeo.gdal as gdal
 from scipy.misc import imresize
@@ -378,3 +379,110 @@ def uniform_chip_generator(input_file, batch_size=32, **kwargs):
         this_batch = feature_collection[batch_ix: batch_ix + batch_size]
 
         yield get_data_from_polygon_list(this_batch, **kwargs)
+
+
+def filter_polygon_size(input_file, output_file, min_side_dim=0, max_side_dim=125,
+                        shuffle=False, make_omitted_files=False):
+    '''
+    Create a geojson file containing only polygons with acceptable side dimensions.
+    INPUT   input_file (str): File name
+            output_file (str): Name under which to save filtered polygons.
+            min_side_dim (int): Minimum acceptable side length (in pixels) for
+                each polygon. Defaults to 0.
+            max_side_dim (int): Maximum acceptable side length (in pixels) for
+                each polygon. Defaults to 125.
+            shuffle (bool): Shuffle polygons before saving to output file. Defaults to
+                False.
+            make_omitted_files (bool): Create files with omitted polygons. Two files
+                are created: one with polygons that are too small and one with large
+                polygons. Defaults to False.
+    '''
+
+    def write_status(percent_complete):
+        '''helper function to write percent complete to stdout'''
+        sys.stdout.write('\r%{0:.2f}'.format(percent_complete) + ' ' * 20)
+        sys.stdout.flush()
+
+    # load polygons
+    with open(input_file) as f:
+        data = geojson.load(f)
+        total_features = float(len(data['features']))
+
+    # format output file name
+    if not output_file.endswith('.geojson'):
+        output_file += '.geojson'
+
+    # find indicies of acceptable polygons
+    ix_ok, small_ix, large_ix = [], [], []
+    img_ids = gt.find_unique_values(input_file, property_name='image_id')
+
+    print 'Filtering polygons... \n'
+    for img_id in img_ids:
+        ix = 0
+        print '... for image {} \n'.format(img_id)
+        img = geoio.GeoImage(img_id + '.tif')
+
+        # create vrt if img has multiple bands (more efficient)
+        if img.shape[0] > 1:
+            vrt_flag = True
+            subprocess.call('gdalbuildvrt tmp.vrt -b 1 {}.tif'.format(img_id), shell=True)
+            img = geoio.GeoImage('tmp.vrt')
+
+        # cycle thru polygons
+        for chip, properties in img.iter_vector(vector=input_file,
+                                                properties=True,
+                                                filter=[{'image_id': img_id}],
+                                                mask=True):
+            ix += 1
+            if chip is None:
+                write_status(100 * ix / total_features)
+                continue
+
+            chan,h,w = np.shape(chip)
+
+            # Identify small chips
+            if min(h, w) < min_side_dim:
+                small_ix.append(ix - 1)
+                write_status(100 * ix / total_features)
+                continue
+
+            # Identify large chips
+            elif max(h, w) > max_side_dim:
+                large_ix.append(ix - 1)
+                write_status(100 * ix / total_features)
+                continue
+
+            # Identify valid chips
+            ix_ok.append(ix - 1)
+            write_status(100 * ix / total_features)
+
+        # remove vrt file
+        if vrt_flag:
+            os.remove('tmp.vrt')
+
+    # save new geojson
+    ok_polygons = [data['features'][i] for i in ix_ok]
+    small_polygons = [data['features'][i] for i in small_ix]
+    large_polygons = [data['features'][i] for i in large_ix]
+    print str(len(small_polygons)) + ' small polygons removed'
+    print str(len(large_polygons)) + ' large polygons removed'
+
+    if shuffle:
+        np.random.shuffle(ok_polygons)
+
+    data['features'] = ok_polygons
+    with open(output_file, 'wb') as f:
+        geojson.dump(data, f)
+
+    if make_omitted_files:
+        # make file with small polygons
+        data['features'] = small_polygons
+        with open('small_' + output_file, 'w') as f:
+            geojson.dump(data, f)
+
+        # make file with large polygons
+        data['features'] = large_polygons
+        with open('large_' + output_file, 'w') as f:
+            geojson.dump(data, f)
+
+    print 'Saved {} polygons to {}'.format(str(len(ok_polygons)), output_file)
