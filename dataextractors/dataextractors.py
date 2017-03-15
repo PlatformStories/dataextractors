@@ -6,7 +6,7 @@ import geoio
 import geojson
 import geojsontools as gt
 import numpy as np
-import sys
+import sys, os
 import subprocess
 import warnings
 import osgeo.gdal as gdal
