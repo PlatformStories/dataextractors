@@ -15,6 +15,7 @@ In this example, we use dataextractors to pull pixel data ('chips') from AOIs in
     ```
 
     <img src='images/chips.png' width=700>  
+    
     <sub>Extracted chips.</sub>
 
 2. Create uniformly-sized chips with black masks over the area not included in the geometry:
@@ -27,6 +28,7 @@ In this example, we use dataextractors to pull pixel data ('chips') from AOIs in
     ```
 
     <img src='images/uniform_chips.png' width=500>  
+    
     <sub>Uniformly-sized chips; pixels outside the geometry are masked.</sub>
 
 3. Create a uniform chip generator:
